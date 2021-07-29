@@ -40,7 +40,7 @@ jobs:
 
       - name: Update Docker Hub description
         uses: peter-evans/dockerhub-description@v2.4.3
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-          DOCKERHUB_REPOSITORY: codetheweb/openrgb-server
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: codetheweb/openrgb-server
