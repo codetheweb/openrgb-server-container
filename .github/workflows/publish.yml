@@ -1,11 +1,24 @@
 name: Publish Docker image
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Get latest tag from OpenRGB
+        run: |
+          git clone https://gitlab.com/CalcProgrammer1/OpenRGB
+          cd OpenRGB
+          echo "TAG_TO_BUILD=$(git describe --abbrev=0)" >> $GITHUB_ENV
+
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -32,8 +45,12 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          build-args:
+            OPENRGB_VERSION=${{ env.TAG_TO_BUILD }}
           push: true
-          tags: codetheweb/openrgb-server:latest
+          tags:
+            codetheweb/openrgb-server:${{ env.TAG_TO_BUILD }}
+            codetheweb/openrgb-server:latest
           platforms: linux/amd64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
@@ -44,3 +61,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: codetheweb/openrgb-server
+          short-description: ${{ github.event.repository.description }}
