@@ -48,7 +48,7 @@ jobs:
           build-args:
             OPENRGB_VERSION=${{ env.TAG_TO_BUILD }}
           push: true
-          tags:
+          tags: |
             codetheweb/openrgb-server:${{ env.TAG_TO_BUILD }}
             codetheweb/openrgb-server:latest
           platforms: linux/amd64
